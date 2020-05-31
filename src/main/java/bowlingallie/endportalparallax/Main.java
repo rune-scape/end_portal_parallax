@@ -32,7 +32,6 @@ public class Main {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         TileEntityRendererDispatcher.instance.renderers.put(TileEntityEndPortal.class, new TileEntityEndPortalParallaxRenderer());
-        TileEntityRendererDispatcher.instance.renderers.put(TileEntityEndGateway.class, new TileEntityEndGatewayParallaxRenderer());
     }
 
     @EventHandler
