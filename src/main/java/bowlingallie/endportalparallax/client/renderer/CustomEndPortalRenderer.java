@@ -1,15 +1,11 @@
 package bowlingallie.endportalparallax.client.renderer;
 
-import bowlingallie.endportalparallax.client.renderer.tileentity.TileEntityEndPortalParallaxRenderer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityEndPortal;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.ARBVertexBlend;
 
 import java.nio.FloatBuffer;
 import java.util.Random;

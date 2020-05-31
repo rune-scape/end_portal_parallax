@@ -1,8 +1,5 @@
 package bowlingallie.endportalparallax.client.renderer.tileentity;
 
-import bowlingallie.endportalparallax.client.renderer.CustomEndPortalRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntityEndPortal;
 
 public class TileEntityEndGatewayParallaxRenderer extends TileEntityEndPortalParallaxRenderer {
