@@ -23,7 +23,7 @@ import runesmith.endportalparallax.client.renderer.blockentity.EndPortalParallax
 @OnlyIn(Dist.CLIENT)
 @Mod("endportalparallax")
 public class EndPortalParallaxMod {
-    private static final KeyMapping RELOAD_SHADERS_KEYMAPPING = new KeyMapping("Reload Shaders", GLFW.GLFW_KEY_F9, "endportalparallax");
+//    private static final KeyMapping RELOAD_SHADERS_KEYMAPPING = new KeyMapping("Reload Shaders", GLFW.GLFW_KEY_F9, "endportalparallax");
 
     public EndPortalParallaxMod() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerKeyMappings);
@@ -33,7 +33,7 @@ public class EndPortalParallaxMod {
     }
 
     public void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(RELOAD_SHADERS_KEYMAPPING);
+//        event.register(RELOAD_SHADERS_KEYMAPPING);
     }
 
     public void registerShaders(RegisterShadersEvent event) {
@@ -52,13 +52,13 @@ public class EndPortalParallaxMod {
         }
     }
 
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) { // Only call code once as the tick event is called twice every tick
-            while (RELOAD_SHADERS_KEYMAPPING.consumeClick()) {
-                RenderSystem.recordRenderCall(Renderer::reloadEndPortalParallaxShader);
-                Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("End portal shaders reloaded"));
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public void onClientTick(TickEvent.ClientTickEvent event) {
+//        if (event.phase == TickEvent.Phase.END) { // Only call code once as the tick event is called twice every tick
+//            while (RELOAD_SHADERS_KEYMAPPING.consumeClick()) {
+//                RenderSystem.recordRenderCall(Renderer::reloadEndPortalParallaxShader);
+//                Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("End portal shaders reloaded"));
+//            }
+//        }
+//    }
 }
