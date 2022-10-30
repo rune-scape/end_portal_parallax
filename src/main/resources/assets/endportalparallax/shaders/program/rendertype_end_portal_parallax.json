@@ -1,0 +1,19 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "endportalparallax:rendertype_end_portal_parallax",
+    "fragment": "endportalparallax:rendertype_end_portal_parallax",
+    "attributes": [ "Position" ],
+    "samplers": [
+        { "name": "Sampler0" },
+        { "name": "Sampler1" }
+    ],
+    "uniforms": [
+        { "name": "CameraPos", "type": "float", "count": 3, "values": [ 0.0, 0.0, 0.0 ] },
+        { "name": "LayerOffset", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "PortalY", "type": "float", "count": 1, "values": [ 0.0 ] }
+    ]
+}
