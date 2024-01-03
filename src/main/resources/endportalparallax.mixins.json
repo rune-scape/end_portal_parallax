@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "runesmith.endportalparallax.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"EndPortalParallaxMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
