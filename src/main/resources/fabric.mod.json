@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "endportalparallax",
+	"version": "${version}",
+	"name": "End Portal Parallax",
+	"description": "makes end portals and gateways look so good i promise",
+	"authors": [
+		"rune"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/endportalparallax/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"runesmith.endportalparallax.EndPortalParallaxMod"
+		]
+	},
+	"mixins": [
+		"endportalparallax.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.3",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
