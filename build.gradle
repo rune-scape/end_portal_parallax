@@ -6,7 +6,7 @@ plugins {
     id 'net.neoforged.gradle.userdev' version '7.0.57'
 }
 
-version = mod_version
+version = mod_version + '-mc1.20-neoforged'
 group = mod_group_id
 
 repositories {
