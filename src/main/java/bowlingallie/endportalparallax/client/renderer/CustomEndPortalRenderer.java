@@ -1,11 +1,14 @@
 package bowlingallie.endportalparallax.client.renderer;
 
+import com.sun.javafx.geom.Vec3f;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntityEndPortal;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 import java.nio.FloatBuffer;
 import java.util.Random;
@@ -13,21 +16,26 @@ import java.util.Random;
 import static org.lwjgl.opengl.GL11.*;
 
 public class CustomEndPortalRenderer {
-
     private static final ResourceLocation END_SKY_TEXTURE = new ResourceLocation("textures/environment/end_sky.png");
     private static final ResourceLocation END_PORTAL_TEXTURE = new ResourceLocation("textures/entity/end_portal.png");
     private static final Random RANDOM = new Random(31100L);
     private final FloatBuffer texBuffer = GLAllocation.createDirectFloatBuffer(16);
 
-    public void render(TileEntityEndPortal portalEntity, float offsetTop, float offsetBot, double posX, double posY, double posZ, double playerX, double playerY, double playerZ, TextureManager r) {
+    public void render(TileEntityEndPortal portalEntity, double posX, double posY, double posZ, Vec3d cameraPos, TextureManager r) {
         if (r == null) {
             return;
         }
+        float minX = (float) posX;
+        float maxX = minX + 1.0F;
+        float minY = (float) posX;
+        float maxY = minY + 1.0F;
+        float minX = (float) posX;
+        AxisAlignedBB aabb = portalEntity.getBlockType().getBlockState().getBaseState().getBoundingBox(portalEntity.getWorld(), portalEntity.getPos()).offset(posX, posY, posZ);
         GlStateManager.disableLighting();
         RANDOM.setSeed(31100L);
         for (int i = 0; i < 16; i++) {
             GlStateManager.pushMatrix();
-            float portalSurfaceY = (float) (posY + offsetTop);
+            float portalSurfaceY = (float) aabb.maxY;
             float layerDepth = 16 - i;
             float layerScale = 0.0625F;
             float layerColorStrength = 1.0F / (layerDepth + 1.0F);
@@ -45,11 +53,10 @@ public class CustomEndPortalRenderer {
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
                 layerScale = 0.5F;
             }
-            float f8 = -portalSurfaceY;
-            float f9 = (float) (f8 + ActiveRenderInfo.getCameraPosition().y);
-            float f10 = (float) (f8 + layerDepth + ActiveRenderInfo.getCameraPosition().y);
-            float f11 = (f9 / f10) + portalSurfaceY;
-            GlStateManager.translate(playerX, f11, playerZ);
+            float portalSurfaceOffsetY = (float) (cameraPos.y - portalSurfaceY);
+            float layerOffsetY = layerDepth + portalSurfaceOffsetY;
+            float layerSurfaceY = (portalSurfaceOffsetY / layerOffsetY) + portalSurfaceY;
+            GlStateManager.translate(cameraPos.x, layerSurfaceY, cameraPos.z);
             GlStateManager.texGen(GlStateManager.TexGen.S, GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.T, GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.R, GL_OBJECT_LINEAR);
@@ -72,59 +79,58 @@ public class CustomEndPortalRenderer {
             GlStateManager.translate(0.5F, 0.5F, 0.0F);
             GlStateManager.rotate((i * i * 4321 + i * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(-0.5F, -0.5F, 0.0F);
-            GlStateManager.translate(-playerX, -playerZ, -playerY);
-            f9 = f8 + (float) ActiveRenderInfo.getCameraPosition().y;
-            GlStateManager.translate(((float) ActiveRenderInfo.getCameraPosition().x * layerDepth) / f9, ((float) ActiveRenderInfo.getCameraPosition().z * layerDepth) / f9, -playerY + 20);
+            GlStateManager.translate(-cameraPos.x, -cameraPos.z, -cameraPos.y);
+            GlStateManager.translate(((float) cameraPos.x * layerDepth) / portalSurfaceOffsetY, ((float) cameraPos.z * layerDepth) / portalSurfaceOffsetY, -cameraPos.y + 20);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-            float red   = (RANDOM.nextFloat() * 0.5F + 0.1F) * layerColorStrength;
+            float red = (RANDOM.nextFloat() * 0.5F + 0.1F) * layerColorStrength;
             float green = (RANDOM.nextFloat() * 0.5F + 0.4F) * layerColorStrength;
-            float blue  = (RANDOM.nextFloat() * 0.5F + 0.5F) * layerColorStrength;
+            float blue = (RANDOM.nextFloat() * 0.5F + 0.5F) * layerColorStrength;
             if (i == 0) {
-                red = green = blue = 1.0F * layerColorStrength;
+                red = green = blue = layerColorStrength;
             }
 
             if (portalEntity.shouldRenderFace(EnumFacing.SOUTH)) {
-                buffer.pos(posX,       posY + offsetBot, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetBot, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetTop, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetTop, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.minY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.minY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.maxY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.maxY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
             }
 
             if (portalEntity.shouldRenderFace(EnumFacing.NORTH)) {
-                buffer.pos(posX,       posY + offsetTop, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetTop, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetBot, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetBot, posZ      ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.maxY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.maxY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.minY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.minY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
             }
 
             if (portalEntity.shouldRenderFace(EnumFacing.EAST)) {
-                buffer.pos(posX + 1.0, posY + offsetTop, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetTop, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetBot, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetBot, posZ      ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.maxY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.maxY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.minY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.minY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
             }
 
             if (portalEntity.shouldRenderFace(EnumFacing.WEST)) {
-                buffer.pos(posX,       posY + offsetBot, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetBot, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetTop, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetTop, posZ      ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.minY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.minY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.maxY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.maxY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
             }
 
             if (portalEntity.shouldRenderFace(EnumFacing.DOWN)) {
-                buffer.pos(posX,       posY + offsetBot, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetBot, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetBot, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetBot, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.minY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.minY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.minY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.minY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
             }
 
             if (portalEntity.shouldRenderFace(EnumFacing.UP)) {
-                buffer.pos(posX,       posY + offsetTop, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetTop, posZ + 1.0).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX + 1.0, posY + offsetTop, posZ      ).color(red, green, blue, 1.0F).endVertex();
-                buffer.pos(posX,       posY + offsetTop, posZ      ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.maxY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.maxY, aabb.maxZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.maxX, aabb.maxY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
+                buffer.pos(aabb.minX, aabb.maxY, aabb.minZ).color(red, green, blue, 1.0F).endVertex();
             }
 
             tessellator.draw();
