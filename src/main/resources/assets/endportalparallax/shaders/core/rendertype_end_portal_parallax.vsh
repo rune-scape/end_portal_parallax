@@ -23,5 +23,6 @@ void main() {
     view = IViewRotMat * (ICamJiggleMat * ModelPos).xyz;
     uv3d.st = (IViewRotMat * Position).xz;
     uv3d.st += (ModelViewMat * vec4(CameraPos, 1.0)).xz;
+    // you might think using fract(uv3d.z) is the same as this, but it produces z fighting on the edges
     uv3d.z = UV.y;
 }
