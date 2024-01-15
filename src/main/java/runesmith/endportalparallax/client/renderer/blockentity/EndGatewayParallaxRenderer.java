@@ -1,6 +1,5 @@
 package runesmith.endportalparallax.client.renderer.blockentity;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -36,7 +35,7 @@ public class EndGatewayParallaxRenderer extends TheEndGatewayRenderer {
             BeaconRenderer.renderBeaconBeam(poseStack, bufferSource, BEAM_LOCATION, partialTicks, f, j, -i, i * 2, afloat, 0.15F, 0.175F);
         }
         
-        Renderer.renderPortal(blockEntity, poseStack.last().pose(), (BufferBuilder) bufferSource.getBuffer(renderType()), getOffsetUp(), getOffsetDown());
+        Renderer.renderPortal(blockEntity, poseStack.last().pose(), bufferSource.getBuffer(renderType()), getOffsetUp(), getOffsetDown());
     }
 
     protected @NotNull RenderType renderType() {
