@@ -35,5 +35,6 @@ public class EndGatewayParallaxRenderer extends EndGatewayTileEntityRenderer {
         }
 
         Renderer.renderPortal(tileEntity, x, y, z, getOffset(), 0.0F);
+        GlStateManager.enableFog();
     }
 }
