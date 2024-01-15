@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.TheEndGatewayRenderer;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.NotNull;
 import runesmith.endportalparallax.client.renderer.Renderer;
 
@@ -36,7 +38,7 @@ public class EndGatewayParallaxRenderer extends TheEndGatewayRenderer {
             BeaconRenderer.renderBeaconBeam(poseStack, bufferSource, BEAM_LOCATION, partialTicks, f, j, -i, i * 2, afloat, 0.15F, 0.175F);
         }
         
-        Renderer.renderPortal(blockEntity, poseStack.last().pose(), (BufferBuilder) bufferSource.getBuffer(renderType()), getOffsetUp(), getOffsetDown());
+        Renderer.renderPortal(blockEntity, poseStack.last().pose(), bufferSource.getBuffer(renderType()), getOffsetUp(), getOffsetDown());
     }
 
     protected @NotNull RenderType renderType() {

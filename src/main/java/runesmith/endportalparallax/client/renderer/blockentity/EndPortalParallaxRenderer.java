@@ -20,7 +20,7 @@ public class EndPortalParallaxRenderer<T extends TheEndPortalBlockEntity> extend
 
     @Override
     public void render(@NotNull T blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
-        Renderer.renderPortal(blockEntity, poseStack.last().pose(), (BufferBuilder) bufferSource.getBuffer(renderType()), getOffsetUp(), getOffsetDown());
+        Renderer.renderPortal(blockEntity, poseStack.last().pose(), bufferSource.getBuffer(renderType()), getOffsetUp(), getOffsetDown());
     }
 
     protected @NotNull RenderType renderType() {

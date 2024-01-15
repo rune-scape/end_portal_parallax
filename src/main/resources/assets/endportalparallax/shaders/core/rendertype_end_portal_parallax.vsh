@@ -1,11 +1,12 @@
 #version 150
 
 in vec3 Position;
-in vec3 UV3D;
+in vec2 UV;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
 uniform mat3 IViewRotMat;
+uniform vec3 CameraPos;
 
 out vec3 view;
 out vec3 uv3d;
@@ -20,5 +21,7 @@ void main() {
 
     gl_Position = ProjMat * ModelPos;
     view = IViewRotMat * (ICamJiggleMat * ModelPos).xyz;
-    uv3d = UV3D;
+    uv3d.st = (IViewRotMat * Position).xz;
+    uv3d.st += (ModelViewMat * vec4(CameraPos, 1.0)).xz;
+    uv3d.z = UV.y;
 }

@@ -58,5 +58,6 @@ void main() {
         color += texture2D(Sampler1, portal_layer_uv(i) * layer_scale + layer_offset).rgb * COLORS[i];
     }
     fragColor = vec4(color, 1.0);
-    //fragColor = vec4(view, 1.0);
+    //fragColor = vec4(fract(view), 1.0);
+    //fragColor = vec4(fract(uv3d), 1.0);
 }
