@@ -4,6 +4,7 @@ import com.mojang.blaze3d.shaders.AbstractUniform;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -11,13 +12,17 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.event.TickEvent;
 import org.joml.Matrix4f;
 import runesmith.endportalparallax.EndPortalParallaxMod;
 
@@ -31,7 +36,7 @@ public class Renderer {
     public static final RenderType RENDERTYPE_END_PORTAL_PARALLAX = RenderType.create("end_portal_parallax", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(Renderer::getEndPortalParallaxShader)).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(TheEndPortalRenderer.END_SKY_LOCATION, false, false).add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build()).createCompositeState(false));
     public static boolean renderBorked = false;
 
-    public static void reloadEndPortalParallaxShader(ResourceManager resourceManager) {
+    public static void reloadEndPortalParallaxShader(ResourceProvider resourceProvider) {
         endPortalParallaxShaderLayerOffsetUniform = new AbstractUniform();
         endPortalParallaxShaderCameraPosUniform = new AbstractUniform();
         if (endPortalParallaxShader != null) {
@@ -39,7 +44,7 @@ public class Renderer {
             endPortalParallaxShader = null;
         }
         try {
-            endPortalParallaxShader = new ShaderInstance(resourceManager, new ResourceLocation("endportalparallax", "rendertype_end_portal_parallax"), DefaultVertexFormat.POSITION_TEX);
+            endPortalParallaxShader = new ShaderInstance(resourceProvider, new ResourceLocation("endportalparallax", "rendertype_end_portal_parallax"), DefaultVertexFormat.POSITION_TEX);
             endPortalParallaxShaderLayerOffsetUniform = endPortalParallaxShader.safeGetUniform("LayerOffset");
             endPortalParallaxShaderCameraPosUniform = endPortalParallaxShader.safeGetUniform("CameraPos");
         } catch (IOException e) {
@@ -59,7 +64,8 @@ public class Renderer {
     public static void borked(String s) {
         if (!renderBorked) {
             renderBorked = true;
-            EndPortalParallaxMod.LOGGER.error("End portal shaders are borked :/ " + s);
+            EndPortalParallaxMod.LOGGER.error("endportalparallax: shaders are borked :/ " + s);
+            Minecraft.getInstance().gui.getChat().addMessage(Component.literal("endportalparallax: shaders are borked :/ please report"));
         }
     }
 
@@ -86,16 +92,22 @@ public class Renderer {
 
     private static void addPortalVertex(VertexConsumer vertexConsumer, Matrix4f mat, float x, float y, float z, float p) {
         vertexConsumer.vertex(mat, x, y, z);
+        // the UV coord here is just a hack to pass the y level for the portal effect for each vertex
         vertexConsumer.uv(0.0f, p);
         vertexConsumer.endVertex();
     }
 
-    public static void updateCameraPos(Vec3 position) {
-        endPortalParallaxShaderCameraPosUniform.set((float) position.x, (float) position.y, (float) position.z);
+    @SubscribeEvent
+    public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
+        Vec3 pos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        endPortalParallaxShaderCameraPosUniform.set((float) pos.x, (float) pos.y, (float) pos.z);
     }
 
-    public static void updateLayerOffset() {
-        endPortalParallaxShaderLayerOffsetUniform.set(System.currentTimeMillis() % 700000L / 700000.0F);
+    @SubscribeEvent
+    public static void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) { // Only call code once as the tick event is called twice every tick
+            endPortalParallaxShaderLayerOffsetUniform.set(System.currentTimeMillis() % 700000L / 700000.0F);
+        }
     }
 
     public static RenderType getRendertypeEndPortalParallax() {
