@@ -31,9 +31,8 @@ import java.lang.reflect.Method;
 @Mod("endportalparallax")
 public class EndPortalParallaxMod {
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static ResourceProvider resourceProvider = null;
     private static KeyMapping reloadShadersKeyMapping = null;
-    public static boolean isDev = true;
+    public static boolean isDev = false;
 
     public EndPortalParallaxMod(IEventBus modEventBus) {
         modEventBus.register(this);
@@ -69,7 +68,7 @@ public class EndPortalParallaxMod {
                     try {
                         Method reloadShadersMethod = GameRenderer.class.getDeclaredMethod("reloadShaders", ResourceProvider.class);
                         reloadShadersMethod.setAccessible(true);
-                        reloadShadersMethod.invoke(Minecraft.getInstance().gameRenderer, resourceProvider);
+                        reloadShadersMethod.invoke(Minecraft.getInstance().gameRenderer, Minecraft.getInstance().getResourceManager());
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
