@@ -4,9 +4,7 @@ package runesmith.endportalparallax.client.renderer.blockentity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.EndGatewayBlockEntity;
-import net.minecraft.client.render.BufferVertexConsumer;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -15,7 +13,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import org.joml.Matrix4f;
 import runesmith.endportalparallax.client.renderer.Renderer;
 
 @Environment(value = EnvType.CLIENT)

@@ -2,10 +2,10 @@
 	"schemaVersion": 1,
 	"id": "endportalparallax",
 	"version": "${version}",
-	"name": "End Portal Parallax",
+	"name": "end portal parallax",
 	"description": "makes end portals and gateways look so good i promise",
 	"authors": [
-		"rune"
+		"rune-smith"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
@@ -23,8 +23,8 @@
 		"endportalparallax.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.14.19",
-		"minecraft": "~1.19.4",
+		"fabricloader": ">=0.15.10",
+		"minecraft": "~1.19.3",
 		"java": ">=17",
 		"fabric-api": "*"
 	},

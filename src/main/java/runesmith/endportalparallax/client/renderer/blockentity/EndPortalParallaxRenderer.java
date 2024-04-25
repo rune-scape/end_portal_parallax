@@ -3,15 +3,11 @@ package runesmith.endportalparallax.client.renderer.blockentity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.EndPortalBlockEntity;
-import net.minecraft.client.render.BufferVertexConsumer;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 import runesmith.endportalparallax.client.renderer.Renderer;
 
 @Environment(value = EnvType.CLIENT)
