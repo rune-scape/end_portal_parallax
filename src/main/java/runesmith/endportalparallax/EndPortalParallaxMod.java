@@ -4,10 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.EndPortalBlockEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -16,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import runesmith.endportalparallax.client.renderer.Renderer;
 import runesmith.endportalparallax.client.renderer.blockentity.EndGatewayParallaxRenderer;
 import runesmith.endportalparallax.client.renderer.blockentity.EndPortalParallaxRenderer;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class EndPortalParallaxMod implements ClientModInitializer {
     // This logger is used to write text to the console and the log file.
@@ -41,7 +46,18 @@ public class EndPortalParallaxMod implements ClientModInitializer {
                 }
             });
         }
-        BlockEntityRendererFactories.register(BlockEntityType.END_PORTAL, EndPortalParallaxRenderer<EndPortalBlockEntity>::new);
-        BlockEntityRendererFactories.register(BlockEntityType.END_GATEWAY, EndGatewayParallaxRenderer::new);
+        registerBlockEntityRendererFactory(BlockEntityType.END_PORTAL, EndPortalParallaxRenderer<EndPortalBlockEntity>::new);
+        registerBlockEntityRendererFactory(BlockEntityType.END_GATEWAY, EndGatewayParallaxRenderer::new);
+    }
+
+    public static <T extends BlockEntity> void registerBlockEntityRendererFactory(BlockEntityType<? extends T> type, BlockEntityRendererFactory<T> factory) {
+        try {
+            Method registerMethod = BlockEntityRendererFactories.class.getDeclaredMethod("method_32144", BlockEntityType.class, BlockEntityRendererFactory.class);
+            registerMethod.setAccessible(true);
+            registerMethod.invoke(null, type, factory);
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            Renderer.borked("failed creating registering BlockEntityRendererFactories");
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,5 @@
 package runesmith.endportalparallax.client.renderer;
 
-import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -10,22 +9,37 @@ import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
 import runesmith.endportalparallax.EndPortalParallaxMod;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class Renderer extends RenderLayer {
     private static final Identifier endPortalParallaxShaderLocation = new Identifier("endportalparallax", "rendertype_end_portal_parallax");
-    private static FabricShaderProgram endPortalParallaxShader;
+    private static net.minecraft.client.render.Shader endPortalParallaxShader;
     private static Uniform endPortalParallaxShaderLayerOffsetUniform = new Uniform();
     private static Uniform endPortalParallaxShaderCameraPosUniform = new Uniform();
-    public static final RenderLayer RENDERLAYER_END_PORTAL_PARALLAX = of("end_portal_parallax", VertexFormats.POSITION_TEXTURE, VertexFormat.DrawMode.QUADS, 256, false, false, MultiPhaseParameters.builder().program(new RenderPhase.ShaderProgram(Renderer::getEndPortalParallaxShader)).texture(RenderPhase.Textures.create().add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false).add(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false).build()).build(false));
+    public static final RenderLayer RENDERLAYER_END_PORTAL_PARALLAX = createRenderLayer("end_portal_parallax", VertexFormats.POSITION_TEXTURE, VertexFormat.DrawMode.QUADS, 256, false, false, MultiPhaseParameters.builder().shader(new RenderPhase.Shader(Renderer::getEndPortalParallaxShader)).texture(RenderPhase.Textures.create().add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false).add(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false).build()).build(false));
     public static boolean renderBorked = false;
 
     public Renderer(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
         super(name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, startAction, endAction);
+    }
+
+    public static RenderLayer createRenderLayer(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, MultiPhaseParameters phases) {
+        try {
+            Method ofMethod = RenderLayer.class.getDeclaredMethod("method_24049", String.class, VertexFormat.class, VertexFormat.DrawMode.class, int.class, boolean.class, boolean.class, MultiPhaseParameters.class);
+            ofMethod.setAccessible(true);
+            return (RenderLayer) ofMethod.invoke(null, name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, phases);
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            borked("failed creating RenderLayer");
+            e.printStackTrace();
+        }
+
+        return getEndPortal();
     }
 
     public static void unloadEndPortalParallaxShader() {
@@ -40,7 +54,7 @@ public class Renderer extends RenderLayer {
     public static void reloadEndPortalParallaxShader() {
         unloadEndPortalParallaxShader();
         try {
-            endPortalParallaxShader = new FabricShaderProgram(MinecraftClient.getInstance().getResourceManager(), endPortalParallaxShaderLocation, VertexFormats.POSITION_TEXTURE);
+            endPortalParallaxShader = new FabricShader(MinecraftClient.getInstance().getResourceManager(), endPortalParallaxShaderLocation, VertexFormats.POSITION_TEXTURE);
             endPortalParallaxShaderLayerOffsetUniform = endPortalParallaxShader.getUniformOrDefault("LayerOffset");
             endPortalParallaxShaderCameraPosUniform = endPortalParallaxShader.getUniformOrDefault("CameraPos");
         } catch (IOException e) {
@@ -49,10 +63,10 @@ public class Renderer extends RenderLayer {
         }
     }
 
-    public static net.minecraft.client.gl.ShaderProgram getEndPortalParallaxShader() {
+    public static net.minecraft.client.render.Shader getEndPortalParallaxShader() {
         if (endPortalParallaxShader == null) {
             borked("endPortalParallaxShader == null");
-            return GameRenderer.getRenderTypeEndPortalProgram();
+            return GameRenderer.getRenderTypeEndPortalShader();
         }
         return endPortalParallaxShader;
     }
@@ -61,7 +75,9 @@ public class Renderer extends RenderLayer {
         if (!renderBorked) {
             renderBorked = true;
             EndPortalParallaxMod.LOGGER.error("endportalparallax: shaders are borked :/ " + s);
-            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal("endportalparallax: shaders are borked :/ please report"));
+            if (MinecraftClient.getInstance().inGameHud != null) {
+                MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal("endportalparallax: shaders are borked :/ please report"));
+            }
         }
     }
 
@@ -92,7 +108,7 @@ public class Renderer extends RenderLayer {
         vertexConsumer.next();
     }
 
-    public static void updateCameraPos(Vector3f pos) {
+    public static void updateCameraPos(Vec3f pos) {
         endPortalParallaxShaderCameraPosUniform.set(pos);
     }
 

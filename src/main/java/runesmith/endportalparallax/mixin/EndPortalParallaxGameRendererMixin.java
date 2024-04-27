@@ -9,11 +9,11 @@ import runesmith.endportalparallax.client.renderer.Renderer;
 
 @Mixin(GameRenderer.class)
 public class EndPortalParallaxGameRendererMixin {
-	@Inject(at = @At("RETURN"), method = "loadPrograms")
+	@Inject(at = @At("RETURN"), method = "loadShaders")
 	private void onLoadShaders(CallbackInfo info) {
 		Renderer.reloadEndPortalParallaxShader();
 	}
-	@Inject(at = @At("RETURN"), method = "clearPrograms")
+	@Inject(at = @At("RETURN"), method = "clearShaders")
 	private void onUnloadShaders(CallbackInfo info) {
 		Renderer.unloadEndPortalParallaxShader();
 	}

@@ -8,8 +8,8 @@
 		"rune-smith"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/end-portal-parallax",
+		"sources": "https://github.com/rune-scape/end_portal_parallax"
 	},
 	"license": "MIT",
 	"icon": "assets/endportalparallax/icon.png",
@@ -24,9 +24,9 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.10",
-		"minecraft": "~1.19.3",
+		"minecraft": "~1.19",
 		"java": ">=17",
-		"fabric-api": ">=0.76"
+		"fabric": "*"
 	},
 	"suggests": {
 		"another-mod": "*"
