@@ -36,15 +36,19 @@ public class Renderer {
     public static final RenderType RENDERTYPE_END_PORTAL_PARALLAX = RenderType.create("end_portal_parallax", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(Renderer::getEndPortalParallaxShader)).setTextureState(RenderStateShard.MultiTextureStateShard.builder().add(TheEndPortalRenderer.END_SKY_LOCATION, false, false).add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build()).createCompositeState(false));
     public static boolean renderBorked = false;
 
-    public static void reloadEndPortalParallaxShader(ResourceManager resourceManager) {
+    public static void unloadEndPortalParallaxShader() {
         endPortalParallaxShaderLayerOffsetUniform = new AbstractUniform();
         endPortalParallaxShaderCameraPosUniform = new AbstractUniform();
         if (endPortalParallaxShader != null) {
             endPortalParallaxShader.close();
             endPortalParallaxShader = null;
         }
+    }
+
+    public static void reloadEndPortalParallaxShader() {
+        unloadEndPortalParallaxShader();
         try {
-            endPortalParallaxShader = new ShaderInstance(resourceManager, new ResourceLocation("endportalparallax", "rendertype_end_portal_parallax"), DefaultVertexFormat.POSITION_TEX);
+            endPortalParallaxShader = new ShaderInstance(Minecraft.getInstance().getResourceManager(), new ResourceLocation("endportalparallax", "rendertype_end_portal_parallax"), DefaultVertexFormat.POSITION_TEX);
             endPortalParallaxShaderLayerOffsetUniform = endPortalParallaxShader.safeGetUniform("LayerOffset");
             endPortalParallaxShaderCameraPosUniform = endPortalParallaxShader.safeGetUniform("CameraPos");
         } catch (IOException e) {
@@ -65,7 +69,9 @@ public class Renderer {
         if (!renderBorked) {
             renderBorked = true;
             EndPortalParallaxMod.LOGGER.error("endportalparallax: shaders are borked :/ " + s);
-            Minecraft.getInstance().gui.getChat().addMessage(Component.literal("endportalparallax: shaders are borked :/ please report"));
+            if (Minecraft.getInstance().gui != null) {
+                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("endportalparallax: shaders are borked :/ please report"));
+            }
         }
     }
 
@@ -82,7 +88,6 @@ public class Renderer {
         if (blockEntity.getLevel() == null) {
             borked("blockEntity.getLevel() == null");
         } else if (Block.shouldRenderFace(blockEntity.getBlockState(), blockEntity.getLevel(), blockEntity.getBlockPos(), dir, blockEntity.getBlockPos().relative(dir))) {
-            BlockPos blockPos = blockEntity.getBlockPos();
             addPortalVertex(vertexConsumer, mat, x1, y1, z1, y1 - 0.5f);
             addPortalVertex(vertexConsumer, mat, x2, y2, z1, y2 - 0.5f);
             addPortalVertex(vertexConsumer, mat, x2, y3, z2, y3 - 0.5f);

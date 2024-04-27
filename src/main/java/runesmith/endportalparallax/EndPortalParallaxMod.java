@@ -16,6 +16,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import runesmith.endportalparallax.client.renderer.Renderer;
@@ -29,11 +30,12 @@ public class EndPortalParallaxMod {
     private static KeyMapping reloadShadersKeyMapping = null;
     public static boolean isDev = false;
 
-    public EndPortalParallaxMod(IEventBus modEventBus) {
+    public EndPortalParallaxMod() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.register(this);
         MinecraftForge.EVENT_BUS.register(Renderer.class);
         if (isDev) {
-            reloadShadersKeyMapping = new KeyMapping("Reload Shaders", GLFW.GLFW_KEY_F9, "endportalparallax");
+            reloadShadersKeyMapping = new KeyMapping("Reloading end portal parallax shaders", GLFW.GLFW_KEY_F9, "endportalparallax");
             MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
         }
     }
@@ -47,7 +49,7 @@ public class EndPortalParallaxMod {
 
     @SubscribeEvent
     public void registerShaders(RegisterShadersEvent event) {
-        Renderer.reloadEndPortalParallaxShader(isDev ? Minecraft.getInstance().getResourceManager() : event.getResourceManager());
+        Renderer.reloadEndPortalParallaxShader();
     }
 
     @SubscribeEvent
@@ -60,9 +62,9 @@ public class EndPortalParallaxMod {
         if (isDev && event.phase == TickEvent.Phase.END) { // Only call code once as the tick event is called twice every tick
             while (reloadShadersKeyMapping.consumeClick()) {
                 RenderSystem.recordRenderCall(() -> {
-                    Minecraft.getInstance().gameRenderer.reloadShaders(Minecraft.getInstance().getResourceManager());
+                    Renderer.reloadEndPortalParallaxShader();
                 });
-                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("Reloading shaders"));
+                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("Reloading end portal parallax shaders"));
             }
         }
     }
