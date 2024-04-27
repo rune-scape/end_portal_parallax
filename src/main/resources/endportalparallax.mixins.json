@@ -4,8 +4,7 @@
 	"compatibilityLevel": "JAVA_17",
 	"client": [
 		"EndPortalParallaxGameRendererMixin",
-		"EndPortalParallaxWorldRendererMixin",
-		"ShaderMixin"
+		"EndPortalParallaxWorldRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

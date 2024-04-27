@@ -1,5 +1,6 @@
 package runesmith.endportalparallax.client.renderer;
 
+import net.fabricmc.fabric.impl.client.rendering.FabricShader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

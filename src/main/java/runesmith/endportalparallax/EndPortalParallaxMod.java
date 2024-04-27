@@ -46,18 +46,7 @@ public class EndPortalParallaxMod implements ClientModInitializer {
                 }
             });
         }
-        registerBlockEntityRendererFactory(BlockEntityType.END_PORTAL, EndPortalParallaxRenderer<EndPortalBlockEntity>::new);
-        registerBlockEntityRendererFactory(BlockEntityType.END_GATEWAY, EndGatewayParallaxRenderer::new);
-    }
-
-    public static <T extends BlockEntity> void registerBlockEntityRendererFactory(BlockEntityType<? extends T> type, BlockEntityRendererFactory<T> factory) {
-        try {
-            Method registerMethod = BlockEntityRendererFactories.class.getDeclaredMethod("method_32144", BlockEntityType.class, BlockEntityRendererFactory.class);
-            registerMethod.setAccessible(true);
-            registerMethod.invoke(null, type, factory);
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-            Renderer.borked("failed creating registering BlockEntityRendererFactories");
-            e.printStackTrace();
-        }
+        BlockEntityRendererFactories.register(BlockEntityType.END_PORTAL, EndPortalParallaxRenderer<EndPortalBlockEntity>::new);
+        BlockEntityRendererFactories.register(BlockEntityType.END_GATEWAY, EndGatewayParallaxRenderer::new);
     }
 }
