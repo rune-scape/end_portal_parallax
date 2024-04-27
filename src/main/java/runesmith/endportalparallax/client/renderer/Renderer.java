@@ -31,7 +31,12 @@ public class Renderer extends RenderLayer {
 
     public static RenderLayer createRenderLayer(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, MultiPhaseParameters phases) {
         try {
-            Method ofMethod = RenderLayer.class.getDeclaredMethod("method_24049", String.class, VertexFormat.class, VertexFormat.DrawMode.class, int.class, boolean.class, boolean.class, MultiPhaseParameters.class);
+            Method ofMethod;
+            try {
+                ofMethod = RenderLayer.class.getDeclaredMethod("method_24049", String.class, VertexFormat.class, VertexFormat.DrawMode.class, int.class, boolean.class, boolean.class, MultiPhaseParameters.class);
+            } catch (NoSuchMethodException e) {
+                ofMethod = RenderLayer.class.getDeclaredMethod("of", String.class, VertexFormat.class, VertexFormat.DrawMode.class, int.class, boolean.class, boolean.class, MultiPhaseParameters.class);
+            }
             ofMethod.setAccessible(true);
             return (RenderLayer) ofMethod.invoke(null, name, vertexFormat, drawMode, expectedBufferSize, hasCrumbling, translucent, phases);
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {

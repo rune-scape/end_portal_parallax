@@ -52,7 +52,12 @@ public class EndPortalParallaxMod implements ClientModInitializer {
 
     public static <T extends BlockEntity> void registerBlockEntityRendererFactory(BlockEntityType<? extends T> type, BlockEntityRendererFactory<T> factory) {
         try {
-            Method registerMethod = BlockEntityRendererFactories.class.getDeclaredMethod("method_32144", BlockEntityType.class, BlockEntityRendererFactory.class);
+            Method registerMethod;
+            try {
+                registerMethod = BlockEntityRendererFactories.class.getDeclaredMethod("method_32144", BlockEntityType.class, BlockEntityRendererFactory.class);
+            } catch (NoSuchMethodException e) {
+                registerMethod = BlockEntityRendererFactories.class.getDeclaredMethod("register", BlockEntityType.class, BlockEntityRendererFactory.class);
+            }
             registerMethod.setAccessible(true);
             registerMethod.invoke(null, type, factory);
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
