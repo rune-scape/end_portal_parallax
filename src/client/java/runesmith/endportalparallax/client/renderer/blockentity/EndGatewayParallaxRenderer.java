@@ -17,7 +17,7 @@ import runesmith.endportalparallax.client.renderer.Renderer;
 
 @Environment(value = EnvType.CLIENT)
 public class EndGatewayParallaxRenderer extends EndGatewayBlockEntityRenderer {
-    public static final Identifier BEAM_TEXTURE = new Identifier("textures/entity/end_gateway_beam.png");
+    public static final Identifier BEAM_TEXTURE = Identifier.ofVanilla("textures/entity/end_gateway_beam.png");
 
     public EndGatewayParallaxRenderer(BlockEntityRendererFactory.Context context) {
         super(context);
@@ -30,9 +30,9 @@ public class EndGatewayParallaxRenderer extends EndGatewayBlockEntityRenderer {
             double d = endGatewayBlockEntity.isRecentlyGenerated() ? (double)endGatewayBlockEntity.getWorld().getTopY() : 50.0;
             g = MathHelper.sin(g * (float)Math.PI);
             int k = MathHelper.floor((double)g * d);
-            float[] fs = endGatewayBlockEntity.isRecentlyGenerated() ? DyeColor.MAGENTA.getColorComponents() : DyeColor.PURPLE.getColorComponents();
-            long l = endGatewayBlockEntity.getWorld().getTime();
-            BeaconBlockEntityRenderer.renderBeam(matrixStack, vertexConsumerProvider, BEAM_TEXTURE, f, g, l, -k, k * 2, fs, 0.15f, 0.175f);
+            int l = endGatewayBlockEntity.isRecentlyGenerated() ? DyeColor.MAGENTA.getEntityColor() : DyeColor.PURPLE.getEntityColor();
+            long m = endGatewayBlockEntity.getWorld().getTime();
+            BeaconBlockEntityRenderer.renderBeam(matrixStack, vertexConsumerProvider, BEAM_TEXTURE, f, g, m, -k, k * 2, l, 0.15f, 0.175f);
         }
 
         Renderer.renderPortal(endGatewayBlockEntity, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider.getBuffer(getLayer()), getTopYOffset(), getBottomYOffset());

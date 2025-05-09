@@ -10,18 +10,20 @@ import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import runesmith.endportalparallax.EndPortalParallaxMod;
 
 import java.io.IOException;
 
 public class Renderer extends RenderLayer {
-    private static final Identifier endPortalParallaxShaderLocation = new Identifier("endportalparallax", "rendertype_end_portal_parallax");
+    private static final Identifier endPortalParallaxShaderLocation = Identifier.of("endportalparallax", "rendertype_end_portal_parallax");
     private static FabricShaderProgram endPortalParallaxShader;
     private static Uniform endPortalParallaxShaderLayerOffsetUniform = new Uniform();
     private static Uniform endPortalParallaxShaderCameraPosUniform = new Uniform();
-    public static final RenderLayer RENDERLAYER_END_PORTAL_PARALLAX = of("end_portal_parallax", VertexFormats.POSITION_TEXTURE, VertexFormat.DrawMode.QUADS, 256, false, false, MultiPhaseParameters.builder().program(new RenderPhase.ShaderProgram(Renderer::getEndPortalParallaxShader)).texture(RenderPhase.Textures.create().add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false).add(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false).build()).build(false));
+    public static final RenderLayer RENDERLAYER_END_PORTAL_PARALLAX = of("end_portal_parallax", VertexFormats.POSITION_TEXTURE, VertexFormat.DrawMode.QUADS, 1536, false, false, MultiPhaseParameters.builder().program(new RenderPhase.ShaderProgram(Renderer::getEndPortalParallaxShader)).texture(RenderPhase.Textures.create().add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false).add(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false).build()).build(false));
     public static boolean renderBorked = false;
 
     public Renderer(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, Runnable startAction, Runnable endAction) {
@@ -89,7 +91,6 @@ public class Renderer extends RenderLayer {
         vertexConsumer.vertex(mat, x, y, z);
         // the UV coord here is just a hack to pass the y level for the portal effect for each vertex
         vertexConsumer.texture(0.0f, p);
-        vertexConsumer.next();
     }
 
     public static void updateCameraPos(Vector3f pos) {
