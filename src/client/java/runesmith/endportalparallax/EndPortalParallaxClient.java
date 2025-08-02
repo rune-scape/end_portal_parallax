@@ -17,7 +17,7 @@ import runesmith.endportalparallax.client.renderer.Renderer;
 import runesmith.endportalparallax.client.renderer.blockentity.EndGatewayParallaxRenderer;
 import runesmith.endportalparallax.client.renderer.blockentity.EndPortalParallaxRenderer;
 
-public class EndPortalParallaxMod implements ClientModInitializer {
+public class EndPortalParallaxClient implements ClientModInitializer {
     // This logger is used to write text to the console and the log file.
     // It is considered best practice to use your mod id as the logger's name.
     // That way, it's clear which mod wrote info, warnings, and errors.

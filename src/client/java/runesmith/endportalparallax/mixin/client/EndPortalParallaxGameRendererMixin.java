@@ -1,4 +1,4 @@
-package runesmith.endportalparallax.mixin;
+package runesmith.endportalparallax.mixin.client;
 
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;

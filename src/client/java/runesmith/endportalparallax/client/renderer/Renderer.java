@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import runesmith.endportalparallax.EndPortalParallaxMod;
+import runesmith.endportalparallax.EndPortalParallaxClient;
 
 import java.io.IOException;
 
@@ -60,7 +60,7 @@ public class Renderer extends RenderLayer {
     public static void borked(String s) {
         if (!renderBorked) {
             renderBorked = true;
-            EndPortalParallaxMod.LOGGER.error("endportalparallax: shaders are borked :/ " + s);
+            EndPortalParallaxClient.LOGGER.error("endportalparallax: shaders are borked :/ " + s);
             MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal("endportalparallax: shaders are borked :/ please report"));
         }
     }
