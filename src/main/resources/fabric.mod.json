@@ -8,22 +8,18 @@
 		"rune-smith"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/project/endportalparallax",
+		"sources": "https://github.com/rune-scape/end_portal_parallax"
 	},
 	"license": "MIT",
 	"icon": "assets/endportalparallax/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"runesmith.endportalparallax.EndPortalParallax"
-		],
 		"client": [
 			"runesmith.endportalparallax.EndPortalParallaxClient"
 		]
 	},
 	"mixins": [
-		"endportalparallax.mixins.json",
 		{
 			"config": "endportalparallax.client.mixins.json",
 			"environment": "client"
@@ -34,8 +30,5 @@
 		"minecraft": ">=1.20 <=1.20.4",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
