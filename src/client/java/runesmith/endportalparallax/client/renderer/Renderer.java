@@ -17,7 +17,7 @@ import runesmith.endportalparallax.EndPortalParallaxClient;
 import java.io.IOException;
 
 public class Renderer extends RenderLayer {
-    private static final Identifier endPortalParallaxShaderLocation = new Identifier("endportalparallax", "rendertype_end_portal_parallax");
+    private static final Identifier endPortalParallaxShaderLocation = Identifier.of("endportalparallax", "rendertype_end_portal_parallax") ;
     private static FabricShaderProgram endPortalParallaxShader;
     private static Uniform endPortalParallaxShaderLayerOffsetUniform = new Uniform();
     private static Uniform endPortalParallaxShaderCameraPosUniform = new Uniform();
@@ -91,7 +91,6 @@ public class Renderer extends RenderLayer {
         vertexConsumer.vertex(mat, x, y, z);
         // the UV coord here is just a hack to pass the y level for the portal effect for each vertex
         vertexConsumer.texture(0.0f, p);
-        vertexConsumer.next();
     }
 
     public static void updateCameraPos(Vector3f pos) {
