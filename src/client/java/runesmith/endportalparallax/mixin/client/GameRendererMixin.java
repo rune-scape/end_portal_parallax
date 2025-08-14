@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import runesmith.endportalparallax.client.renderer.Renderer;
 
 @Mixin(GameRenderer.class)
-public class EndPortalParallaxGameRendererMixin {
+public class GameRendererMixin {
 	@Inject(at = @At("RETURN"), method = "loadPrograms")
 	private void onLoadShaders(CallbackInfo info) {
 		Renderer.reloadEndPortalParallaxShader();

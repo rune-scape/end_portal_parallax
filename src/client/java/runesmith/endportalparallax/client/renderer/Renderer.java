@@ -60,8 +60,10 @@ public class Renderer extends RenderLayer {
     public static void borked(String s) {
         if (!renderBorked) {
             renderBorked = true;
-            EndPortalParallaxClient.LOGGER.error("endportalparallax: shaders are borked :/ " + s);
-            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal("endportalparallax: shaders are borked :/ please report"));
+            EndPortalParallaxClient.LOGGER.error("endportalparallax: shaders are borked :/ {}", s);
+            if (MinecraftClient.getInstance().inGameHud != null) {
+                MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.literal("endportalparallax: shaders are borked :/ please report"));
+            }
         }
     }
 
